@@ -1,0 +1,14 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+
+    # Перенаправляем корень на /web/
+    RewriteRule ^$ web/ [L]
+    
+    # Перенаправляем все запросы в папку web
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ web/$1 [L]
+</IfModule>
+
+# Устанавливаем index.php как индексный файл
+DirectoryIndex web/index.php
