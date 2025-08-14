@@ -21,7 +21,7 @@ $this->title = 'Главная';
 
                 <p>Ключевые компетенции: Разработка высоконагруженных бэкенд-систем на Laravel 9 (PHP 8.2) и CakePHP 5 (PHP 8.3) с соблюдением принципов MVC. Глубокая экспертиза в интеграции со сторонними API (банки, платежные системы), включая безопасное подключение и использование CryptoPro CSP на сервере для подписи XML-запросов. Опыт создания API для мобильных приложений, разработки Telegram ботов (включая низкоуровневую реализацию без библиотек) и Telegram Gateway. Навыки написания сложных SQL-запросов, базового фронтенда на jQuery и эффективной поддержки и модернизации legacy-кода.</p>
 
-                <p><a class="btn btn-outline-secondary" href="https://github.com/Zema31/test_HuntingUchetProstos" target="_blank">GitHub &raquo;</a></p>
+                <p><a class="btn btn-outline-secondary" href="https://github.com/Zema31/test_HuntingUchetProsto" target="_blank">GitHub &raquo;</a></p>
             </div>
             <div class="col-lg-4 mb-3">
                 <h2>Мои хобби</h2>
