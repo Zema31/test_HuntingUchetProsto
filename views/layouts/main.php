@@ -40,6 +40,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         'items' => [
             ['label' => 'Главная', 'url' => ['/site/index']],
             ['label' => 'База знаний', 'url' => ['/site/themes']],
+            ['label' => 'Магазин', 'url' => ['/site/shop']],
         ]
     ]);
     NavBar::end();

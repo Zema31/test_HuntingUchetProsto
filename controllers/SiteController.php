@@ -2,42 +2,12 @@
 
 namespace app\controllers;
 
-use Yii;
-use yii\filters\AccessControl;
+use app\models\Contact;
+use app\models\Deal;
 use yii\web\Controller;
-use yii\web\Response;
-use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
 
 class SiteController extends Controller
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'only' => ['logout'],
-                'rules' => [
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
-        ];
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -46,10 +16,6 @@ class SiteController extends Controller
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
-            ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
         ];
     }
@@ -64,7 +30,7 @@ class SiteController extends Controller
         return $this->render('index');
     }
 
-      /**
+    /**
      * Страница База знаний.
      *
      * @return string
@@ -72,5 +38,41 @@ class SiteController extends Controller
     public function actionThemes()
     {
         return $this->render('themes');
+    }
+
+    /**
+     * Страница Магазин.
+     *
+     * @return string
+     */
+    public function actionShop()
+    {
+        // $dealsRaw = Deal::find()->all();
+        // $deals = [];
+        // foreach ($dealsRaw as $deal) {
+        //     $deals[$deal->name] = [
+        //         $deal->idText,
+        //         $deal->nameText,
+        //         $deal->sumText,
+        //     ];
+        // }
+
+        // $contactsRaw = Contact::find()->all();
+        // $contacts = [];
+        // foreach ($contactsRaw as $contact) {
+        //     $contacts[$contact->name] = [
+        //         $contact->idText,
+        //         $contact->nameText,
+        //         $contact->surnameText,
+        //     ];
+        // }
+
+        $deals = Deal::find()->all();
+        $contacts = Contact::find()->all();
+
+        return $this->render(
+            'shop',
+            ['deals' => $deals, 'contacts' => $contacts]
+        );
     }
 }
