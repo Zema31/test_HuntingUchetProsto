@@ -4,6 +4,8 @@
 
 use yii\helpers\Html;
 use yii\bootstrap5\Accordion;
+use yii\bootstrap5\Modal;
+use yii\bootstrap5\ActiveForm;
 
 $this->title = 'База данных магазина';
 $this->params['breadcrumbs'][] = $this->title;
@@ -62,68 +64,74 @@ $items = [
         'items' => $items,
         'options' => ['class' => 'my-accordion'],
     ]);
+
+    // Модальное окно редактирования Контакта
+    Modal::begin([
+        'id' => 'editContactModal',
+        'title' => 'Редактирование Контакта',
+        'footer' => '
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отменить</button>
+        <button type="button" class="btn btn-primary" id="saveContactBtn">Сохранить</button>
+    ',
+        'options' => ['tabindex' => '-1', 'aria-hidden' => 'true'],
+        'dialogOptions' => ['class' => 'modal-dialog'],
+    ]);
+
+    $formContact = ActiveForm::begin([
+        'id' => 'editContactForm',
+        'enableAjaxValidation' => false,
+    ]);
+    ?>
+    <input type="hidden" id="editContactId" name="id">
+
+    <div class="mb-3">
+        <label class="form-label">Имя</label>
+        <input type="text" class="form-control" name="name" id="editContactName">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Фамилия</label>
+        <input type="text" class="form-control" name="surname" id="editContactSurname">
+    </div>
+
+    <?php
+    ActiveForm::end();
+    Modal::end();
     ?>
 
-    <!-- Модальное окно редактирования Контакта -->
-    <div class="modal fade" id="editContactModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Редактирование Контакта</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editContactForm">
-                        <!-- Уникальные ID для элементов контакта -->
-                        <input type="hidden" id="editContactId" name="id">
-                        <div class="mb-3">
-                            <label class="form-label">Имя</label>
-                            <input type="text" class="form-control" name="name" id="editContactName">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Фамилия</label>
-                            <input type="text" class="form-control" name="surname" id="editContactSurname">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отменить</button>
-                    <button type="button" class="btn btn-primary" id="saveContactBtn">Сохранить</button>
-                </div>
-            </div>
-        </div>
+    <?php
+    // Модальное окно редактирования Сделки
+    Modal::begin([
+        'id' => 'editDealModal',
+        'title' => 'Редактирование Сделки',
+        'footer' => '
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отменить</button>
+        <button type="button" class="btn btn-primary" id="saveDealBtn">Сохранить</button>
+    ',
+        'options' => ['tabindex' => '-1', 'aria-hidden' => 'true'],
+        'dialogOptions' => ['class' => 'modal-dialog'],
+    ]);
+
+    $formDeal = ActiveForm::begin([
+        'id' => 'editDealForm',
+        'enableAjaxValidation' => false,
+    ]);
+    ?>
+    <input type="hidden" id="editDealId" name="id">
+
+    <div class="mb-3">
+        <label class="form-label">Наименование</label>
+        <input type="text" class="form-control" name="name" id="editDealName">
     </div>
 
-    <!-- Модальное окно редактирования Сделки -->
-    <div class="modal fade" id="editDealModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <!-- Исправленный заголовок -->
-                    <h5 class="modal-title">Редактирование Сделки</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editDealForm">
-                        <!-- Уникальные ID для элементов сделки -->
-                        <input type="hidden" id="editDealId" name="id">
-                        <div class="mb-3">
-                            <label class="form-label">Наименование</label>
-                            <input type="text" class="form-control" name="name" id="editDealName">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Сумма</label>
-                            <input type="text" class="form-control" name="sum" id="editDealSum">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отменить</button>
-                    <button type="button" class="btn btn-primary" id="saveDealBtn">Сохранить</button>
-                </div>
-            </div>
-        </div>
+    <div class="mb-3">
+        <label class="form-label">Сумма</label>
+        <input type="text" class="form-control" name="sum" id="editDealSum">
     </div>
+    <?php
+    ActiveForm::end();
+    Modal::end();
+    ?>
 
 </div>
 
