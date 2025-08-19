@@ -100,14 +100,14 @@ a.desc:after {
 
 .edit-btn {
     position: absolute;
-    right: 300px;
+    right: 30vw;
     top: 10px;
     z-index: 1050;
 }
 
 .delete-btn {
     position: absolute;
-    right: 100px;
+    right: 10vw;
     top: 10px;
     z-index: 1050;
 }
