@@ -235,8 +235,8 @@ $items = [
 
     $document.on('click', '#saveContactBtn', function() {
         let id = null;
-        if (typeof $editDeal !== 'undefined' && $editDeal.length > 0) {
-            id = $editDeal.data('id');
+        if (typeof $editContact !== 'undefined' && $editContact.length > 0) {
+            id = $editContact.data('id');
         }
 
         const url = id ? '/contact/' + id : '/contact';
