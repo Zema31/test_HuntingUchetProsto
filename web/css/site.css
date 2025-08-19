@@ -90,3 +90,34 @@ a.desc:after {
 .contact-section {
     display: none;
 }
+
+.create-btn {
+    position: absolute;
+    right: 100px;
+    top: 10px;
+    z-index: 1050;
+}
+
+.edit-btn {
+    position: absolute;
+    right: 300px;
+    top: 10px;
+    z-index: 1050;
+}
+
+.delete-btn {
+    position: absolute;
+    right: 100px;
+    top: 10px;
+    z-index: 1050;
+}
+
+/* Дополнительные стили для обеспечения корректного отображения */
+.accordion-header {
+    position: relative;
+}
+
+/* Убедимся, что кнопка аккордеона не перекрывает нашу кнопку */
+.accordion-button {
+    z-index: 1 !important;
+}

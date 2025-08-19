@@ -26,7 +26,7 @@ foreach ($deals as $deal) {
         'Сумма: ' . $deal->sum,
         'Контакты: <br>' . $dealContacts
     ];
-    $label = $deal->name . ' <button class="btn btn-sm btn-outline-primary edit-btn edit-deal" data-id="' . $deal->id . '">Редактировать</button>' . ' <button class="btn btn-sm btn-outline-danger edit-btn delete-deal" data-id="' . $deal->id . '">Удалить</button>';
+    $label = $deal->name . ' <button class="btn btn-sm btn-outline-primary edit-btn edit-deal" data-id="' . $deal->id . '">Редактировать</button>' . ' <button class="btn btn-sm btn-outline-danger delete-btn delete-deal" data-id="' . $deal->id . '">Удалить</button>';
     $dealsSection[] = [
         'label' => $label,
         'content' => $content,
@@ -46,7 +46,7 @@ foreach ($contacts as $contact) {
         'Фамилия: ' . $contact->surname,
         'Сделки: <br>' . $contactDeals
     ];
-    $label = $contact->name . ' <button class="btn btn-sm btn-outline-primary edit-btn edit-contact" data-id="' . $contact->id . '">Редактировать</button>' . ' <button class="btn btn-sm btn-outline-danger edit-btn delete-contact" data-id="' . $contact->id . '">Удалить</button>';
+    $label = $contact->name . ' <button class="btn btn-sm btn-outline-primary edit-btn edit-contact" data-id="' . $contact->id . '">Редактировать</button>' . ' <button class="btn btn-sm btn-outline-danger delete-btn delete-contact" data-id="' . $contact->id . '">Удалить</button>';
     $contactsSection[] = [
         'label' => $label,
         'content' => $content,
@@ -56,13 +56,13 @@ foreach ($contacts as $contact) {
 
 $items = [
     [
-        'label' => 'Сделки <button class="btn btn-sm btn-outline-primary edit-btn create-deal">Создать</button>',
+        'label' => 'Сделки <button class="btn btn-sm btn-outline-primary create-deal create-btn">Создать</button>',
         'content' => Accordion::widget(['items' => $dealsSection]),
         'options' => ['class' => 'my-accordion'],
         'encode' => false,
     ],
     [
-        'label' => 'Контакты <button class="btn btn-sm btn-outline-primary edit-btn create-contact">Создать</button>',
+        'label' => 'Контакты <button class="btn btn-sm btn-outline-primary create-contact create-btn">Создать</button>',
         'content' => Accordion::widget(['items' => $contactsSection]),
         'options' => ['class' => 'my-accordion'],
         'encode' => false,
