@@ -16,6 +16,8 @@ class m250818_180650_create_deal_contact_table extends Migration
             'id' => $this->primaryKey(),
             'deal_id' => $this->integer()->notNull(),
             'contact_id' => $this->integer()->notNull(),
+            'created_at' => $this->dateTime(),
+            'PRIMARY KEY(deal_id, contact_id)',
         ]);
 
         $this->createIndex(
