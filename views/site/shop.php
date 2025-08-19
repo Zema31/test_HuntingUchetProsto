@@ -143,7 +143,7 @@ $items = [
         <input type="num" class="form-control" name="sum" id="editDealSum">
     </div>
 
-    <div class="mb-3">
+    <div class="mb-3 contact-section">
         <label class="form-label">Прикрепленные контакты</label>
         <div id="attachedContacts" class="border rounded p-2">
             <div class="text-center text-muted" id="noAttachedContactsMessage">
@@ -154,7 +154,7 @@ $items = [
         </div>
     </div>
 
-    <div class="mb-3">
+    <div class="mb-3 contact-section">
         <label class="form-label">Добавить контакт</label>
         <div id="possibleContacts" class="border rounded p-2">
             <div class="text-center text-muted" id="noPossibleContactsMessage">
@@ -210,6 +210,8 @@ $items = [
 
         $('#editDealForm')[0].reset();
         $('#editDealId').val(id);
+
+        $('.contact-section').show();
 
         $.ajax({
             url: '/deal/' + id,
@@ -322,6 +324,7 @@ $items = [
 
     $document.on('click', '.create-deal', function() {
         $('#editDealForm')[0].reset();
+        $('.contact-section').hide();
         $('#editDealModal').modal('show');
     });
 
