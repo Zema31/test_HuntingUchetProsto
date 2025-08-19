@@ -17,7 +17,7 @@ foreach ($deals as $deal) {
         'Наименование: ' . $deal->name,
         'Сумма: ' . $deal->sum,
     ];
-    $label = $deal->name . ' <button class="btn btn-sm btn-outline-primary edit-btn edit-deal" data-id="' . $deal->id . '">Редактировать</button>';
+    $label = $deal->name . ' <button class="btn btn-sm btn-outline-primary edit-btn edit-deal" data-id="' . $deal->id . '">Редактировать</button>' . ' <button class="btn btn-sm btn-outline-primary edit-btn delete-deal" data-id="' . $deal->id . '">Удалить</button>';
     $dealsSection[] = [
         'label' => $label,
         'content' => $content,
@@ -32,7 +32,7 @@ foreach ($contacts as $contact) {
         'Имя: ' . $contact->name,
         'Фамилия: ' . $contact->surname,
     ];
-    $label = $contact->name . ' <button class="btn btn-sm btn-outline-primary edit-btn edit-contact" data-id="' . $contact->id . '">Редактировать</button>';
+    $label = $contact->name . ' <button class="btn btn-sm btn-outline-primary edit-btn edit-contact" data-id="' . $contact->id . '">Редактировать</button>' . ' <button class="btn btn-sm btn-outline-primary edit-btn delete-contact" data-id="' . $contact->id . '">Удалить</button>';
     $contactsSection[] = [
         'label' => $label,
         'content' => $content,
@@ -42,14 +42,16 @@ foreach ($contacts as $contact) {
 
 $items = [
     [
-        'label' => 'Сделки',
+        'label' => 'Сделки <button class="btn btn-sm btn-outline-primary edit-btn create-deal">Создать</button>',
         'content' => Accordion::widget(['items' => $dealsSection]),
         'options' => ['class' => 'my-accordion'],
+        'encode' => false,
     ],
     [
-        'label' => 'Контакты',
+        'label' => 'Контакты <button class="btn btn-sm btn-outline-primary edit-btn create-contact">Создать</button>',
         'content' => Accordion::widget(['items' => $contactsSection]),
         'options' => ['class' => 'my-accordion'],
+        'encode' => false,
     ]
 ];
 
@@ -126,7 +128,7 @@ $items = [
 
     <div class="mb-3">
         <label class="form-label">Сумма</label>
-        <input type="text" class="form-control" name="sum" id="editDealSum">
+        <input type="num" class="form-control" name="sum" id="editDealSum">
     </div>
     <?php
     ActiveForm::end();
@@ -136,58 +138,154 @@ $items = [
 </div>
 
 <script>
-    // Используем делегирование событий для динамических элементов
-    $(document).on('click', '.edit-contact', function() {
-        const id = $(this).data('id');
-        console.log("Opening contact modal for ID:", id);
+    let $document = $(document);
 
-        // Сброс и настройка формы контакта
+    $document.on('click', '.edit-contact', function() {
+        $editContact = $(this).closest("button");
+        const id = $editContact.data('id');
+
         $('#editContactForm')[0].reset();
         $('#editContactId').val(id);
 
-        // Здесь можно добавить AJAX-запрос для загрузки данных
-        $('#editContactModal').modal('show');
+        $.ajax({
+            url: '/contact/' + id,
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                $('#editContactName').val(data.name);
+                $('#editContactSurname').val(data.surname);
+            },
+            error: function(xhr, status, error) {
+                alert('Ошибка загрузки данных контакта:' + error);
+            },
+            complete: function() {
+                $('#editContactModal').modal('show');
+            }
+        });
     });
 
-    $(document).on('click', '.edit-deal', function() {
-        const id = $(this).data('id');
-        console.log("Opening deal modal for ID:", id);
+    $document.on('click', '.edit-deal', function() {
+        $editDeal = $(this).closest("button");
+        const id = $editDeal.data('id');
 
-        // Сброс и настройка формы сделки
         $('#editDealForm')[0].reset();
         $('#editDealId').val(id);
 
-        // Здесь можно добавить AJAX-запрос для загрузки данных
+        $.ajax({
+            url: '/deal/' + id,
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                $('#editDealName').val(data.name);
+                $('#editDealSum').val(data.sum);
+            },
+            error: function(xhr, status, error) {
+                alert('Ошибка загрузки данных сделки:' + error);
+            },
+            complete: function() {
+                $('#editDealModal').modal('show');
+            }
+        });
+    });
+
+    $document.on('click', '#saveContactBtn', function() {
+        let id = null;
+        if (typeof $editDeal !== 'undefined' && $editDeal.length > 0) {
+            id = $editDeal.data('id');
+        }
+
+        const url = id ? '/contact/' + id : '/contact';
+        const method = id ? 'PUT' : 'POST';
+
+        const formData = $('#editContactForm').serialize();
+
+        $.ajax({
+            url: url,
+            type: method,
+            data: formData,
+            success: function(response) {
+                $('#editContactModal').modal('hide');
+                alert('Контакт успешно сохранен');
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                if (xhr.status === 422 && xhr.responseJSON) {
+                    alert('Ошибка валидации:\n' + xhr.responseJSON[0]['message']);
+                } else {
+                    alert('Ошибка сохранения:\n' + error);
+                }
+            },
+        });
+    });
+
+    $document.on('click', '#saveDealBtn', function() {
+        let id = null;
+        if (typeof $editDeal !== 'undefined' && $editDeal.length > 0) {
+            id = $editDeal.data('id');
+        }
+        const url = id ? '/deal/' + id : '/deal';
+        const method = id ? 'PUT' : 'POST';
+
+        const formData = $('#editDealForm').serialize();
+
+        $.ajax({
+            url: url,
+            type: method,
+            data: formData,
+            success: function(response) {
+                $('#editDealModal').modal('hide');
+                alert('Сделка успешно сохранена');
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                if (xhr.status === 422 && xhr.responseJSON) {
+                    alert('Ошибка валидации:\n' + xhr.responseJSON[0]['message']);
+                } else {
+                    alert('Ошибка сохранения:\n' + error);
+                }
+            },
+        });
+    });
+
+    $document.on('click', '.delete-deal', function() {
+        const id = $(this).data('id');
+        $.ajax({
+            url: '/deal/' + id,
+            method: 'DELETE',
+            dataType: 'json',
+            success: function(data) {
+                alert('Сделка успешно удалена');
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                alert('Ошибка удаления сделки:' + error);
+            },
+        });
+    });
+
+    $document.on('click', '.delete-contact', function() {
+        const id = $(this).data('id');
+        $.ajax({
+            url: '/contact/' + id,
+            method: 'DELETE',
+            dataType: 'json',
+            success: function(data) {
+                alert('Контакт успешно удален');
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                alert('Ошибка удаления контакт:' + error);
+            },
+        });
+    });
+
+    $document.on('click', '.create-deal', function() {
+        $('#editDealForm')[0].reset();
         $('#editDealModal').modal('show');
     });
+
+    $document.on('click', '.create-contact', function() {
+        $('#editContactForm')[0].reset();
+        $('#editContactModal').modal('show');
+    });
 </script>
-
-
-<!-- // // Обработчик сохранения
-// $('#saveBtn').click(function() {
-// const formData = $('#editContactForm').serializeArray();
-// const data = {};
-// $.each(formData, function(_, field) {
-// data[field.name] = field.value;
-// });
-
-// $.post('/site/update-item', data, function(response) {
-// if (response.success) {
-// $('#editContactModal').modal('hide');
-// location.reload(); // Обновляем страницу
-// } else {
-// alert('Ошибка: ' + response.message);
-// }
-// });
-// });
-
-// Загрузка данных
-// $.get('/site/get-item', {
-// id
-// }, function(data) {
-// if (data.success) {
-// $('#editName').val(data.model.name);
-// $('#editSurname').val(data.model.surname);
-// $('#editContactModal').modal('show');
-// }
-// }); -->

@@ -18,4 +18,13 @@ class DealController extends ActiveController
 
         return $behaviors;
     }
+
+    public function checkAccess($action, $model = null, $params = [])
+    {
+        if ($action === 'update') {
+            if (!$model) {
+                throw new \yii\web\NotFoundHttpException("Сделка не существует");
+            }
+        }
+    }
 }
