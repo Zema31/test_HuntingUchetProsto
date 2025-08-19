@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\db\ActiveRecord;
 
 class Contact extends ActiveRecord
@@ -47,5 +48,32 @@ class Contact extends ActiveRecord
     {
         return $this->hasMany(Deal::class, ['id' => 'deal_id'])
             ->via('dealContacts');
+    }
+
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            Yii::error('Ошибка в beforeSave: ' . print_r($this->errors, true));
+            return false;
+        }
+
+        Yii::info('Сохранение контакта: ' . print_r($this->attributes, true));
+        return true;
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+        Yii::info('Контакт успешно сохранен: ' . $this->id);
+    }
+
+    public function afterValidate()
+    {
+        parent::afterValidate();
+        if ($this->hasErrors()) {
+            Yii::error('Ошибки валидации: ' . print_r($this->errors, true));
+        } else {
+            Yii::info('Валидация прошла успешно');
+        }
     }
 }
