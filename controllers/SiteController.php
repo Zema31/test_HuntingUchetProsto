@@ -47,28 +47,8 @@ class SiteController extends Controller
      */
     public function actionShop()
     {
-        // $dealsRaw = Deal::find()->all();
-        // $deals = [];
-        // foreach ($dealsRaw as $deal) {
-        //     $deals[$deal->name] = [
-        //         $deal->idText,
-        //         $deal->nameText,
-        //         $deal->sumText,
-        //     ];
-        // }
-
-        // $contactsRaw = Contact::find()->all();
-        // $contacts = [];
-        // foreach ($contactsRaw as $contact) {
-        //     $contacts[$contact->name] = [
-        //         $contact->idText,
-        //         $contact->nameText,
-        //         $contact->surnameText,
-        //     ];
-        // }
-
-        $deals = Deal::find()->all();
-        $contacts = Contact::find()->all();
+        $deals = Deal::find()->with('contacts')->all();
+        $contacts = Contact::find()->with('deals')->all();
 
         return $this->render(
             'shop',

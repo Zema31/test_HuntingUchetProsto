@@ -12,12 +12,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $dealsSection = [];
 foreach ($deals as $deal) {
+    $dealContacts = '';
+    foreach ($deal->contacts as $contact) {
+        $dealContacts .= 'id контакта: ' . $contact->id . ' | ' . $contact->name . " " . $contact->surname . "\n";
+    }
     $content = [
         'id сделки: ' . $deal->id,
         'Наименование: ' . $deal->name,
         'Сумма: ' . $deal->sum,
+        'Контакты: <br>' . $dealContacts
     ];
-    $label = $deal->name . ' <button class="btn btn-sm btn-outline-primary edit-btn edit-deal" data-id="' . $deal->id . '">Редактировать</button>' . ' <button class="btn btn-sm btn-outline-primary edit-btn delete-deal" data-id="' . $deal->id . '">Удалить</button>';
+    $label = $deal->name . ' <button class="btn btn-sm btn-outline-primary edit-btn edit-deal" data-id="' . $deal->id . '">Редактировать</button>' . ' <button class="btn btn-sm btn-outline-danger edit-btn delete-deal" data-id="' . $deal->id . '">Удалить</button>';
     $dealsSection[] = [
         'label' => $label,
         'content' => $content,
@@ -27,12 +32,17 @@ foreach ($deals as $deal) {
 
 $contactsSection = [];
 foreach ($contacts as $contact) {
+    $contactDeals = '';
+    foreach ($contact->deals as $deal) {
+        $contactDeals .= 'id сделки: ' . $deal->id . ' | ' . $deal->name . "\n";
+    }
     $content = [
         'id контакта: ' . $contact->id,
         'Имя: ' . $contact->name,
         'Фамилия: ' . $contact->surname,
+        'Сделки: <br>' . $contactDeals
     ];
-    $label = $contact->name . ' <button class="btn btn-sm btn-outline-primary edit-btn edit-contact" data-id="' . $contact->id . '">Редактировать</button>' . ' <button class="btn btn-sm btn-outline-primary edit-btn delete-contact" data-id="' . $contact->id . '">Удалить</button>';
+    $label = $contact->name . ' <button class="btn btn-sm btn-outline-primary edit-btn edit-contact" data-id="' . $contact->id . '">Редактировать</button>' . ' <button class="btn btn-sm btn-outline-danger edit-btn delete-contact" data-id="' . $contact->id . '">Удалить</button>';
     $contactsSection[] = [
         'label' => $label,
         'content' => $content,

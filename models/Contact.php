@@ -6,9 +6,8 @@ use yii\db\ActiveRecord;
 
 class Contact extends ActiveRecord
 {
-    /**
-     * @return array the validation rules.
-     */
+    public $dealIds;
+
     public function rules()
     {
         return [
@@ -37,5 +36,16 @@ class Contact extends ActiveRecord
                 'message' => 'Пожалуйста, укажите имя контакта'
             ],
         ];
+    }
+
+    public function getDealContacts()
+    {
+        return $this->hasMany(DealContact::class, ['contact_id' => 'id']);
+    }
+
+    public function getDeals()
+    {
+        return $this->hasMany(Deal::class, ['id' => 'deal_id'])
+            ->via('dealContacts');
     }
 }
