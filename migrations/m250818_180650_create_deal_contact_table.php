@@ -13,7 +13,6 @@ class m250818_180650_create_deal_contact_table extends Migration
     public function safeUp()
     {
         $this->createTable('{{%deal_contact}}', [
-            'id' => $this->primaryKey(),
             'deal_id' => $this->integer()->notNull(),
             'contact_id' => $this->integer()->notNull(),
             'created_at' => $this->dateTime(),
