@@ -1,11 +1,6 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
     
-    # Внутренний редирект корня на /index
-    RewriteRule ^$ /index [L]
-    
-    # Обработка остальных запросов
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !^/(web)
     RewriteRule ^(.*)$ web/$1 [L]
 </IfModule>

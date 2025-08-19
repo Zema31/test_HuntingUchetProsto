@@ -17,7 +17,8 @@ $config = [
             'cookieValidationKey' => '5C98AjCU1g6nyDAZFz-zAo7BqzrBAxrI',
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
-            ]
+            ],
+            // 'baseUrl' => '',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',

@@ -56,22 +56,4 @@ class SiteController extends Controller
             ['deals' => $deals, 'contacts' => $contacts]
         );
     }
-
-    public function actionTest()
-    {
-        Yii::info('Тестовый экшн вызван');
-
-        // Простая проверка сохранения
-        $model = new Contact();
-        $model->name = 'Test';
-        $model->surname = 'Test';
-
-        if ($model->save()) {
-            Yii::info('Тестовое сохранение успешно');
-            return ['success' => true, 'id' => $model->id];
-        } else {
-            Yii::error('Тестовое сохранение failed: ' . print_r($model->errors, true));
-            return ['success' => false, 'errors' => $model->errors];
-        }
-    }
 }
