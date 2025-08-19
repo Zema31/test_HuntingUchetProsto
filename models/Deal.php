@@ -8,6 +8,16 @@ class Deal extends ActiveRecord
 {
     public $contactIds;
 
+    public function fields()
+    {
+        return [
+            'id',
+            'name',
+            'sum',
+            'contacts'
+        ];
+    }
+
     public function rules()
     {
         return [

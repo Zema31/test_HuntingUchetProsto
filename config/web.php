@@ -49,7 +49,15 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'deal', 'pluralize' => false],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'deal',
+                    'pluralize' => false,
+                    'extraPatterns' => [
+                        'POST {id}/contacts' => 'add-contact',
+                        'DELETE {id}/contacts/{contactId}' => 'remove-contact',
+                    ],
+                ],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'contact', 'pluralize' => false],
                 '' => 'site/index',
             ],

@@ -1,6 +1,7 @@
 <?php
 
 /** @var yii\web\View $this */
+// В конфигурации или в начале приложения
 
 use yii\helpers\Html;
 use yii\bootstrap5\Accordion;
@@ -14,7 +15,7 @@ $dealsSection = [];
 foreach ($deals as $deal) {
     $dealContacts = '';
     foreach ($deal->contacts as $contact) {
-        $dealContacts .= 'id контакта: ' . $contact->id . ' | ' . $contact->name . " " . $contact->surname . "\n";
+        $dealContacts .= 'id контакта: ' . $contact->id . ' | ' . $contact->name . " " . $contact->surname . "<br>";
     }
     $content = [
         'id сделки: ' . $deal->id,
@@ -34,7 +35,7 @@ $contactsSection = [];
 foreach ($contacts as $contact) {
     $contactDeals = '';
     foreach ($contact->deals as $deal) {
-        $contactDeals .= 'id сделки: ' . $deal->id . ' | ' . $deal->name . "\n";
+        $contactDeals .= 'id сделки: ' . $deal->id . ' | ' . $deal->name . '<br>';
     }
     $content = [
         'id контакта: ' . $contact->id,
@@ -121,7 +122,7 @@ $items = [
         <button type="button" class="btn btn-primary" id="saveDealBtn">Сохранить</button>
     ',
         'options' => ['tabindex' => '-1', 'aria-hidden' => 'true'],
-        'dialogOptions' => ['class' => 'modal-dialog'],
+        'dialogOptions' => ['class' => 'modal-dialog modal-lg'],
     ]);
 
     $formDeal = ActiveForm::begin([
@@ -140,6 +141,28 @@ $items = [
         <label class="form-label">Сумма</label>
         <input type="num" class="form-control" name="sum" id="editDealSum">
     </div>
+
+    <div class="mb-3">
+        <label class="form-label">Прикрепленные контакты</label>
+        <div id="attachedContacts" class="border rounded p-2">
+            <div class="text-center text-muted" id="noAttachedContactsMessage">
+                Нет прикрепленных контактов
+            </div>
+            <div id="attachedContactsList" class="d-none">
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Добавить контакт</label>
+        <div id="possibleContacts" class="border rounded p-2">
+            <div class="text-center text-muted" id="noPossibleContactsMessage">
+                Нет возможных контактов
+            </div>
+            <div id="possibleContactsList" class="d-none">
+            </div>
+        </div>
+    </div>
     <?php
     ActiveForm::end();
     Modal::end();
@@ -149,6 +172,12 @@ $items = [
 
 <script>
     let $document = $(document);
+
+    let allContacts = <?= json_encode(
+                            array_map(function ($contact) {
+                                return $contact->toArray();
+                            }, $contacts)
+                        ) ?>;
 
     $document.on('click', '.edit-contact', function() {
         $editContact = $(this).closest("button");
@@ -188,6 +217,11 @@ $items = [
             success: function(data) {
                 $('#editDealName').val(data.name);
                 $('#editDealSum').val(data.sum);
+
+                let possibleContacts = filterContacts(data.contacts || []);
+
+                updateContactsList(data.contacts || [], '#attachedContactsList', '#noAttachedContactsMessage', 'delete');
+                updateContactsList(possibleContacts || [], '#possibleContactsList', '#noPossibleContactsMessage', 'add');
             },
             error: function(xhr, status, error) {
                 alert('Ошибка загрузки данных сделки:' + error);
@@ -215,7 +249,6 @@ $items = [
             data: formData,
             success: function(response) {
                 $('#editContactModal').modal('hide');
-                alert('Контакт успешно сохранен');
                 location.reload();
             },
             error: function(xhr, status, error) {
@@ -244,7 +277,6 @@ $items = [
             data: formData,
             success: function(response) {
                 $('#editDealModal').modal('hide');
-                alert('Сделка успешно сохранена');
                 location.reload();
             },
             error: function(xhr, status, error) {
@@ -264,7 +296,6 @@ $items = [
             method: 'DELETE',
             dataType: 'json',
             success: function(data) {
-                alert('Сделка успешно удалена');
                 location.reload();
             },
             error: function(xhr, status, error) {
@@ -280,7 +311,6 @@ $items = [
             method: 'DELETE',
             dataType: 'json',
             success: function(data) {
-                alert('Контакт успешно удален');
                 location.reload();
             },
             error: function(xhr, status, error) {
@@ -298,4 +328,107 @@ $items = [
         $('#editContactForm')[0].reset();
         $('#editContactModal').modal('show');
     });
+
+    function updateContactsList(contacts, contactListId, noContactsMessageId, editBtnType) {
+        const contactsList = $(contactListId);
+        const noContactsMessage = $(noContactsMessageId);
+
+        contactsList.empty();
+
+        if (contacts.length === 0) {
+            noContactsMessage.removeClass('d-none');
+            contactsList.addClass('d-none');
+            return;
+        }
+
+        noContactsMessage.addClass('d-none');
+        contactsList.removeClass('d-none');
+
+        contacts.forEach(function(contact) {
+            const contactItem = $('<div class="contact-item d-flex justify-content-between align-items-center mb-2 p-2 border-bottom"></div>');
+            const contactInfo = $('<div></div>').text(contact.id + ': ' + contact.name + contact.surname);
+
+            let editBtn;
+            if (editBtnType == 'delete') {
+                editBtn = $('<button type="button" class="btn btn-sm btn-danger">Удалить</button>');
+            } else {
+                editBtn = $('<button type="button" class="btn btn-sm btn-success">Добавить</button>');
+            }
+            editBtn.data('contact-id', contact.id);
+            editBtn.on('click', function() {
+                if (editBtnType == 'delete') {
+                    deleteContactFromDeal(contact.id);
+                } else {
+                    addContactToDeal(contact.id);
+                }
+            });
+
+            contactItem.append(contactInfo).append(editBtn);
+            contactsList.append(contactItem);
+        });
+    }
+
+    function filterContacts(attachedContacts) {
+        const attachedContactIds = attachedContacts.map(contact => contact.id);
+        return allContacts.filter(contact =>
+            !attachedContactIds.includes(contact.id)
+        );
+    }
+
+
+    function deleteContactFromDeal(contactId) {
+        const dealId = $('#editDealId').val();
+        console.log(contactId);
+        console.log(dealId);
+        if (!confirm('Вы уверены, что хотите удалить контакт из сделки?')) {
+            return;
+        }
+        $.ajax({
+            url: '/deal/' + dealId + '/contacts/' + contactId,
+            method: 'DELETE',
+            data: {
+                _csrf: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                $.ajax({
+                    url: '/deal/' + dealId,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        let possibleContacts = filterContacts(data.contacts || []);
+                        updateContactsList(data.contacts || [], '#attachedContactsList', '#noAttachedContactsMessage', 'delete');
+                        updateContactsList(possibleContacts || [], '#possibleContactsList', '#noPossibleContactsMessage', 'add');
+                    }
+                });
+            },
+            error: function(xhr, status, error) {
+                alert('Ошибка при удалении контакта: ' + error);
+            }
+        });
+    }
+
+    function addContactToDeal(contactId) {
+        const dealId = $('#editDealId').val();
+        console.log(contactId);
+        console.log(dealId);
+        $.ajax({
+            url: '/deal/' + dealId + '/contacts',
+            method: 'POST',
+            data: {
+                contact_id: contactId,
+            },
+            success: function(response) {
+                $.ajax({
+                    url: '/deal/' + dealId,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        let possibleContacts = filterContacts(data.contacts || []);
+                        updateContactsList(data.contacts || [], '#attachedContactsList', '#noAttachedContactsMessage', 'delete');
+                        updateContactsList(possibleContacts || [], '#possibleContactsList', '#noPossibleContactsMessage', 'add');
+                    }
+                });
+            }
+        });
+    }
 </script>

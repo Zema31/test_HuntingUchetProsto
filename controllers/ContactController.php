@@ -19,6 +19,13 @@ class ContactController extends ActiveController
         return $behaviors;
     }
 
+    public function actions()
+    {
+        $actions = parent::actions();
+
+        return $actions;
+    }
+
     public function checkAccess($action, $model = null, $params = [])
     {
         if ($action === 'update') {

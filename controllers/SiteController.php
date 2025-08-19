@@ -55,4 +55,5 @@ class SiteController extends Controller
             ['deals' => $deals, 'contacts' => $contacts]
         );
     }
+    
 }
