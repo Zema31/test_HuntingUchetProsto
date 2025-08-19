@@ -2,6 +2,7 @@
 
 /** @var yii\web\View $this */
 // В конфигурации или в начале приложения
+Yii::debug('Registered routes: ' . print_r(Yii::$app->urlManager->rules, true));
 
 use yii\helpers\Html;
 use yii\bootstrap5\Accordion;
