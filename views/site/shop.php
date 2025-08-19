@@ -249,9 +249,8 @@ $items = [
             type: method,
             data: formData,
             success: function(response) {
-                alert('Успех');
                 $('#editContactModal').modal('hide');
-                // location.reload();
+                location.reload();
             },
             error: function(xhr, status, error) {
                 if (xhr.status === 422 && xhr.responseJSON) {
